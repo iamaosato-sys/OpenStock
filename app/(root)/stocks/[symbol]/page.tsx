@@ -5,6 +5,7 @@ import StockHeader, { StockHeaderSkeleton } from "@/components/stocks/StockHeade
 import StockSentimentCard from "@/components/stocks/StockSentimentCard";
 import StockChart from "@/components/stocks/StockChart";
 import Panel from "@/components/Panel";
+import OptionsChain from "@/components/options/OptionsChain";
 import {
     TECHNICAL_ANALYSIS_WIDGET_CONFIG,
     COMPANY_PROFILE_WIDGET_CONFIG,
@@ -26,8 +27,10 @@ async function Sentiment({ symbol }: { symbol: string }) {
 }
 
 // Charts come straight from TradingView (live, no quota); only the header waits on Finnhub, and it streams.
-export default async function StockDetails({ params }: StockDetailsPageProps) {
+export default async function StockDetails({ params, searchParams }: StockDetailsPageProps) {
     const { symbol: rawSymbol } = await params;
+    const exp = (await searchParams)?.exp;
+    const expiry = exp && /^\d{4}-\d{2}-\d{2}$/.test(exp) ? exp : undefined;
     const symbol = decodeURIComponent(rawSymbol).toUpperCase();
     const tvSymbol = formatSymbolForTradingView(symbol);
 
@@ -56,6 +59,9 @@ export default async function StockDetails({ params }: StockDetailsPageProps) {
                             </div>
                         </Panel>
                     )}
+                    <Suspense fallback={null}>
+                        <OptionsChain symbol={symbol} expiry={expiry} />
+                    </Suspense>
                     <Panel title="Financials" sub="Income statement, balance sheet and ratios">
                         <TradingViewWidget
                             scriptUrl={`${scriptUrl}financials.js`}
