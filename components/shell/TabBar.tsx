@@ -15,6 +15,8 @@ const PAGE_LABELS: Record<string, string> = {
     '/dashboard': 'Overview',
     '/watchlist': 'Watchlist',
     '/profile': 'Profile',
+    '/signals': 'Signals',
+    '/predictions': 'Predictions',
 };
 
 // Pages become browser-style tabs; stock pages are labelled by their symbol.
